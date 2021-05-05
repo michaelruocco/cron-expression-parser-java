@@ -23,7 +23,7 @@ Parses Cron Expressions of the following format:
 
 For example given the input argument:
 
-`*/15 0 1,15 * 1-5 /usr/bin/find`
+`3,45/15 0 1,15 * 1-5 /usr/bin/find`
 
 The output should be:
 
@@ -38,7 +38,7 @@ command       /usr/bin/find
 
 ## Running from gradle
 
-`./gradlew run --args="*/15 0 1,15 * 1-5 /usr/bin/find"`
+`./gradlew run --args="3,45/15 0 1,15 * 1-5 /usr/bin/find"`
 
 or
 
@@ -100,3 +100,18 @@ command       /usr/bin/find
 
 The code in this project was originally written in [this exercises repo](https://github.com/michaelruocco/exercises)
 it was extracted out into its this repo once it became reasonably. The original commit history can be found there.
+
+## Using Published Versions
+
+A new version of the parser is published on each successful pipeline run against the
+master branch. You can download the runnable jar using the following URL (with the latest version inserted)
+
+`https://repo1.maven.org/maven2/com/github/michaelruocco/cron-expression-parser-java/{version}/cron-expression-parser-java-{version}-all.jar`
+
+When the jar is downloaded you can run it using the following command:
+
+`cron-expression-parser-java-{version}-all.jar 3,45/15 0 1,15 * 1-5 /usr/bin/find`
+
+The library jar can also be used in a maven or gradle project using the standard dependency definitions outlined
+
+`https://search.maven.org/artifact/com.github.michaelruocco/cron-expression-parser-java`
