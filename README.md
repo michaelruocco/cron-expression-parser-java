@@ -27,13 +27,13 @@ For example given the input argument:
 
 The output should be:
 
-```bash
-minute 0 15 30 45
-hour 0
-day of month 1 15
-month 1 2 3 4 5 6 7 8 9 10 11 12
-day of week 1 2 3 4 5
-command /usr/bin/find
+```zsh
+minute        3 18 33 45 48
+hour          0
+day of month  1 15
+month         1 2 3 4 5 6 7 8 9 10 11 12
+day of week   1 2 3 4 5
+command       /usr/bin/find
 ```
 
 ## Running from gradle
@@ -74,7 +74,7 @@ running the following command to disable globbing:
 Once globbing has been disabled, when the jar command list above is run again the following output will
 be displayed:
 
-```shell
+```zsh
 minute        3 18 33 45 48
 hour          0
 day of month  1 15
