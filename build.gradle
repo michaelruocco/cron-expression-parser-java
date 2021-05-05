@@ -66,7 +66,7 @@ testlogger {
 }
 
 jacoco {
-    toolVersion = "0.8.6"
+    toolVersion = "0.8.7"
 }
 
 jacocoTestReport {
@@ -94,7 +94,7 @@ java {
     withSourcesJar()
 }
 
-def gitUrl = "https://github.com/michaelruocco/library-template"
+def gitUrl = "https://github.com/michaelruocco/cron-expression-parser-java"
 def pomConfig = {
     licenses {
         license {

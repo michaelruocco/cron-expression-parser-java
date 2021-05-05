@@ -3,7 +3,7 @@ name: pipeline
 on:
   push:
     branches-ignore:
-      - 'library-template-*'
+      - 'cron-expression-parser-java-*'
 
 jobs:
   build:
