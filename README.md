@@ -13,56 +13,75 @@
 
 ## Overview
 
-This is a template project for creating library projects more quickly. It does not include test
-fixtures or integration tests as these are not always required, but attempts to give the other
-commonly used components that I like to use on library projects including:
+Parses Cron Expressions of the following format:
 
-*   [Lombok](https://projectlombok.org/) for boilerplate code generation
+*   (Minute) (hour) (day of month) (month) (day of week) (command)
+*   `*` means all possible time units
+*   `-` a range of time units
+*   `,` a comma separated list of individual time units
+*   `/` intervals time units, the left value is the starting value and the right value is the max value
 
-*   [AssertJ](https://joel-costigliola.github.io/assertj/) for fluent and readable assertions
+For example given the input argument:
 
-*   [SLF4J](http://www.slf4j.org/) for abstracted and pluggable logging
+`*/15 0 1,15 * 1-5 /usr/bin/find`
 
-*   [JUnit5](https://junit.org/junit5/) for unit testing
+The output should be:
 
-*   [Mockito](https://site.mockito.org/) for mocking
+```bash
+minute 0 15 30 45
+hour 0
+day of month 1 15
+month 1 2 3 4 5 6 7 8 9 10 11 12
+day of week 1 2 3 4 5
+command /usr/bin/find
+```
 
-*   [Axion release plugin](https://github.com/allegro/axion-release-plugin) for version management
+## Running from gradle
 
-*   [Spotless plugin](https://github.com/diffplug/spotless/tree/main/plugin-gradle) for code formatting
+`./gradlew run --args="*/15 0 1,15 * 1-5 /usr/bin/find"`
 
-*   [Nebula plugin](https://github.com/nebula-plugins/gradle-lint-plugin) for gradle linting
+or
 
-*   [Versions plugin](https://github.com/ben-manes/gradle-versions-plugin) for monitoring dependency versions
+`./gradlew run --args="-arguments 3,45/15 0 1,15 * 1-5 /usr/bin/find"`
 
-*   [Jacoco plugin](https://docs.gradle.org/current/userguide/jacoco_plugin.html) for code coverage reporting
+## Running built jar
 
-*   [Test Logger plugin](https://plugins.gradle.org/plugin/com.adarshr.test-logger) for pretty printing of test
-    results when running tests from gradle
-    
-*   [Github actions](https://github.com/actions) for the build pipeline
+The build will build two jars:
 
-*   [Maven publish plugin](https://docs.gradle.org/current/userguide/publishing_maven.html) for publishing snapshots
-    and releases to [Maven Central](https://search.maven.org/)
-    
-*   [Nexus staging plugin](https://github.com/Codearte/gradle-nexus-staging-plugin) to automatically close and drop
-    releases published to [Maven Central](https://search.maven.org/)
+1.  A plain jar that is built for use a library at build/libs/cron-parser.jar
+2.  A shadow jar that is built for running as a standalone application build/libs/cron-parser-all.jar
 
-*   [Better code hub](https://bettercodehub.com/) for code and architecture analysis
+To run the shadow jar if you are planning to pass any arguments with `*` notation you may
+need to configure your terminal to disable globbing. I found that using zsh shell on my mac this was
+and issue. If I try to run the following command:
 
-*   [Codecov](https://codecov.io/) for code coverage analysis
+`java -jar build/libs/cron-expression-parser-java-{version}-all.jar 3,45/15 0 1,15 * 1-5 /usr/bin/find`
 
-*   [Sonar Cloud](https://sonarcloud.io/) for static code analysis 
+or
 
-*   [Codacy](https://www.codacy.com/) for additional static code and coverage analysis
+`java -jar build/libs/cron-expression-parser-java-{version}-all.jar -arguments 3,45/15 0 1,15 * 1-5 /usr/bin/find`
 
-For a number of the above tools to work your Github Actions pipeline will require the
-following secrets to be set up:
+Then the following output is returned:
 
-*   SONAR_TOKEN for [Sonar Cloud](https://sonarcloud.io/) analysis
-*   CODACY_TOKEN for [Codacy](https://www.codacy.com/) analysis
-*   OSSRH_USERNAME and OSSRH_PASSWORD for releasing snapshots and releases to Maven Central
-*   OSSRH_PGP_SECRET_KEY and OSSRH_PGP_SECRET_KEY_PASSWORD for signing release artifacts before pushing to maven central
+`notation parser not found for value gradlew.bat`
+
+As you can see the * command has been expanded to include all the files and folders
+from the current directory where the command is being run from. This can be fixed by
+running the following command to disable globbing:
+
+`set -o noglob`
+
+Once globbing has been disabled, when the jar command list above is run again the following output will
+be displayed:
+
+```shell
+minute        3 18 33 45 48
+hour          0
+day of month  1 15
+month         1 2 3 4 5 6 7 8 9 10 11 12
+day of week   1 2 3 4 5
+command       /usr/bin/find
+```
 
 ## Useful Commands
 
@@ -76,3 +95,8 @@ following secrets to be set up:
 // checks dependency versions
 ./gradlew clean currentVersion dependencyUpdates lintGradle spotlessApply build
 ```
+
+## Commit History
+
+The code in this project was originally written in [this exercises repo](https://github.com/michaelruocco/exercises)
+it was extracted out into its this repo once it became reasonably. The original commit history can be found there.
