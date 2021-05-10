@@ -65,8 +65,8 @@ Then the following output is returned:
 
 `notation parser not found for value gradlew.bat`
 
-As you can see the * command has been expanded to include all the files and folders
-from the current directory where the command is being run from. This can be fixed by
+As you can see the `*` has been expanded to include files/folders
+from the current directory where the command is being run. This can be fixed by
 running the following command to disable globbing:
 
 `set -o noglob`
@@ -99,7 +99,7 @@ command       /usr/bin/find
 ## Commit History
 
 The code in this project was originally written in [this exercises repo](https://github.com/michaelruocco/exercises)
-it was extracted out into its this repo once it became reasonably. The original commit history can be found there.
+it was extracted out into its this repo once it became reasonably large. The original commit history can be found there.
 
 ## Using Published Versions
 
@@ -110,7 +110,9 @@ master branch. You can download the runnable jar using the following URL (with t
 
 When the jar is downloaded you can run it using the following command:
 
-`cron-expression-parser-java-{version}-all.jar 3,45/15 0 1,15 * 1-5 /usr/bin/find`
+`java -jar cron-expression-parser-java-{version}-all.jar 3,45/15 0 1,15 * 1-5 /usr/bin/find`
+
+Don't forget to run `set -o noglob` as mentioned previously above to turn of globbing if using a fresh terminal!
 
 The library jar can also be used in a maven or gradle project using the standard dependency definitions outlined
 
