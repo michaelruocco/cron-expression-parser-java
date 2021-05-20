@@ -8,4 +8,8 @@ public interface NotationParser {
 
     int[] toValues(String input, TimeUnit unit);
 
+    default int toFirstValue(String input, TimeUnit unit) {
+        return toValues(input, unit)[0];
+    }
+
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import uk.co.mruoc.cronparser.domain.TimeUnit;
 
-import java.util.Arrays;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
@@ -16,11 +15,11 @@ public class IntervalNotationParser implements NotationParser {
 
     private static final String WILDCARD = "*";
 
-    private final SimpleNotationParser simpleParser;
     private final RangeNotationParser rangeParser;
+    private final SimpleNotationParser simpleParser;
 
     public IntervalNotationParser() {
-        this(new SimpleNotationParser(), new RangeNotationParser());
+        this(new RangeNotationParser(), new SimpleNotationParser());
     }
 
     @Override
@@ -36,10 +35,13 @@ public class IntervalNotationParser implements NotationParser {
     public int[] toValues(String input, TimeUnit unit) {
         try {
             String[] parts = split(input);
-            int[] starts = toStarts(parts[0], unit);
-            unit.validate(starts);
+            String first = parts[0];
+            int start = toStart(first, unit);
+            int end = toEnd(first, unit);
+            unit.validate(start);
+            unit.validate(end);
             var interval = Integer.parseInt(parts[1]);
-            return calculateIntervals(starts, unit, interval);
+            return calculateIntervalsArray(start, end, interval);
         } catch (ArrayIndexOutOfBoundsException | InvalidNotationException e) {
             throw new InvalidNotationException(input, e);
         }
@@ -49,30 +51,34 @@ public class IntervalNotationParser implements NotationParser {
         return StringUtils.split(value, "/");
     }
 
-    private int[] toStarts(String value, TimeUnit unit) {
+    private int toStart(String value, TimeUnit unit) {
         if (WILDCARD.equals(value)) {
-            return new int[]{unit.getLowerBound()};
+            return unit.getLowerBound();
         }
         if (rangeParser.appliesTo(value)) {
-            return rangeParser.toValues(value, unit);
+            return rangeParser.toFirstValue(value, unit);
         }
-        return simpleParser.toValues(value, unit);
+        return simpleParser.toFirstValue(value, unit);
     }
 
-    private static int[] calculateIntervals(int[] starts, TimeUnit unit, int interval) {
-        return Arrays.stream(starts)
-                .flatMap(start -> calculateIntervals(start, unit, interval))
-                .distinct()
-                .sorted()
-                .toArray();
+    private int toEnd(String value, TimeUnit unit) {
+        if (rangeParser.appliesTo(value)) {
+            int [] values = rangeParser.toValues(value, unit);
+            return values[values.length-1];
+        }
+        return unit.getUpperBound();
     }
 
-    private static IntStream calculateIntervals(int start, TimeUnit unit, int interval) {
-        return IntStream.iterate(start, lessThanOrEqualToUpperBound(unit), incrementBy(interval));
+    private static int[] calculateIntervalsArray(int start, int end, int interval) {
+        return calculateIntervals(start, end, interval).distinct().sorted().toArray();
     }
 
-    private static IntPredicate lessThanOrEqualToUpperBound(TimeUnit unit) {
-        return i -> i <= unit.getUpperBound();
+    private static IntStream calculateIntervals(int start, int end, int interval) {
+        return IntStream.iterate(start, lessThan(end), incrementBy(interval));
+    }
+
+    private static IntPredicate lessThan(int max) {
+        return i -> i <= max;
     }
 
     private static IntUnaryOperator incrementBy(int interval) {

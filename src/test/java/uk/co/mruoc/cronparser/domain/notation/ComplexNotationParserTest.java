@@ -34,12 +34,21 @@ class ComplexNotationParserTest {
     }
 
     @Test
-    void shouldReturnCorrectValuesForComplexIntervalStartNotation() {
+    void shouldReturnCorrectValuesForComplexIntervalStartNotationWithComma() {
         String input = "3,45/15";
 
         int[] values = parser.toValues(input, TimeUnit.MINUTES);
 
-        assertThat(values).containsExactly(3, 18, 33, 45, 48);
+        assertThat(values).containsExactly(3, 45);
+    }
+
+    @Test
+    void shouldReturnCorrectValuesForComplexIntervalStartNotationWithCommaAndRange() {
+        String input = "3,40-45/5";
+
+        int[] values = parser.toValues(input, TimeUnit.MINUTES);
+
+        assertThat(values).containsExactly(3, 40, 45);
     }
 
     @Test

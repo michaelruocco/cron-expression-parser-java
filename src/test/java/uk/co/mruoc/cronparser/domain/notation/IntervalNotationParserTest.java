@@ -16,7 +16,7 @@ class IntervalNotationParserTest {
         assertThat(parser.appliesTo("2/2")).isTrue();
         assertThat(parser.appliesTo("*/6")).isTrue();
         assertThat(parser.appliesTo("2-4/6")).isTrue();
-        assertThat(parser.appliesTo("2,4/6")).isTrue();
+        assertThat(parser.appliesTo("4/6")).isTrue();
 
         assertThat(parser.appliesTo("2-4.4/6")).isFalse();
         assertThat(parser.appliesTo("2.2,4/6")).isFalse();
@@ -45,16 +45,16 @@ class IntervalNotationParserTest {
 
         int[] values = parser.toValues(input, TimeUnit.HOURS);
 
-        assertThat(values).containsExactly(2, 3, 4, 8, 9, 10, 14, 15, 16, 20, 21, 22);
+        assertThat(values).containsExactly(2);
     }
 
     @Test
-    void shouldReturnIntervalValuesWithMultipleStartValues() {
-        String input = "2,4/6";
+    void shouldReturnIntervalValuesWithSingleStartValues() {
+        String input = "4/6";
 
         int[] values = parser.toValues(input, TimeUnit.HOURS);
 
-        assertThat(values).containsExactly(2, 4, 8, 10, 14, 16, 20, 22);
+        assertThat(values).containsExactly(4, 10, 16, 22);
     }
 
     @Test

@@ -24,6 +24,24 @@ class MainTest {
     }
 
     @Test
+    void shouldParseValidMinutesIntervalWithCommaStartValuesCronExpression() throws Exception {
+        String[] args = {"3,45/15", "0", "1,15", "*", "1-5", "/usr/bin/find"};
+
+        String output = tapSystemErrAndOut(() -> Main.main(args));
+
+        assertThat(output).contains("minute        3 45");
+    }
+
+    @Test
+    void shouldParseValidMinutesIntervalWithCommaAndRangeStartValuesCronExpression() throws Exception {
+        String[] args = {"3,40-45/5", "0", "1,15", "*", "1-5", "/usr/bin/find"};
+
+        String output = tapSystemErrAndOut(() -> Main.main(args));
+
+        assertThat(output).contains("minute        3 40 45");
+    }
+
+    @Test
     void shouldParseValidComplexMinutesCronExpression() throws Exception {
         String[] args = {"1,4-8,*/15", "0", "1,15", "*", "1-5", "/usr/bin/find"};
 
