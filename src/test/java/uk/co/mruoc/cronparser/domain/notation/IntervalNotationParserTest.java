@@ -12,7 +12,7 @@ class IntervalNotationParserTest {
     private final NotationParser parser = new IntervalNotationParser();
 
     @Test
-    void shouldOnlyApplyToIntervalWithIntegerRangeOrMultipleStartValues() {
+    void shouldOnlyApplyToIntervalWithIntegerRangeOfStartValues() {
         assertThat(parser.appliesTo("2/2")).isTrue();
         assertThat(parser.appliesTo("*/6")).isTrue();
         assertThat(parser.appliesTo("2-4/6")).isTrue();
@@ -40,7 +40,7 @@ class IntervalNotationParserTest {
     }
 
     @Test
-    void shouldReturnIntervalValuesWithRangeOfStartValues() {
+    void shouldReturnIntervalValuesWithRangeOfStartAndEndValue() {
         String input = "2-4/6";
 
         int[] values = parser.toValues(input, TimeUnit.HOURS);
@@ -49,7 +49,7 @@ class IntervalNotationParserTest {
     }
 
     @Test
-    void shouldReturnIntervalValuesWithSingleStartValues() {
+    void shouldReturnIntervalValuesWithSingleStartValue() {
         String input = "4/6";
 
         int[] values = parser.toValues(input, TimeUnit.HOURS);
